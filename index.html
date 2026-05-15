@@ -3,333 +3,379 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sniper Editor Pro - Safe & Complete Edition</title>
+    <title>LB Code</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#232323">
+    <link rel="apple-touch-icon" href="icon.png">
     <style>
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        :root { 
-            --bg: #121212; 
-            --card-bg: #1e1e1e; 
-            --border: #333333; 
-            --accent: #ffca28; 
-            --text: #e0e0e0; 
-            --danger: #ff5252; 
-            --success: #4caf50; 
-            --warning: #ffca28; 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #232323;
+            background-image: linear-gradient(145deg, #2c2c2c, #1a1a1a);
+            color: #e0e0e0;
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        #search-container { margin-bottom: 15px; }
+        #search-bar {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #444;
+            background: #1a1a1a;
+            color: #ffd43b;
+            box-sizing: border-box;
+            font-size: 1rem;
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.5);
+        }
+
+        #button-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .grid-row {
+            display: grid;
+            grid-template-columns: 35px 1fr 48px 48px;
+            gap: 8px;
+            align-items: center;
+            position: relative;
+            background: rgba(255,255,255,0.03);
+            padding: 10px;
+            border-radius: 14px;
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.5), inset -1px -1px 2px rgba(255,255,255,0.05);
+        }
+
+        button {
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            touch-action: manipulation;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 44px;
+            transition: all 0.1s ease;
+            box-shadow: 3px 3px 6px rgba(0,0,0,0.4), -1px -1px 4px rgba(255,255,255,0.05);
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:active {
+            box-shadow: inset 3px 3px 6px rgba(0,0,0,0.6);
+            transform: translateY(1px);
+        }
+
+        .btn-color-trigger {
+            width: 28px !important; height: 28px !important;
+            border-radius: 50%; border: 2px solid #1a1a1a;
+            justify-self: center; box-shadow: inset 1px 1px 3px rgba(255,255,255,0.3), 2px 2px 5px rgba(0,0,0,0.5);
+        }
+
+        .color-menu {
+            position: absolute; top: -55px; left: 0; background: #333;
+            padding: 8px; border-radius: 25px; display: none; gap: 10px;
+            z-index: 100; box-shadow: 6px 6px 12px rgba(0,0,0,0.6); border: 1px solid #444;
+        }
+
+        .color-option { width: 26px; height: 26px; border-radius: 50%; cursor: pointer; box-shadow: inset 1px 1px 3px rgba(0,0,0,0.5); }
+
+        .btn-main { 
+            background: linear-gradient(145deg, #444, #333); color: white; 
+            padding: 0 12px; text-align: left; overflow: hidden; 
+            text-overflow: ellipsis; white-space: nowrap; justify-content: flex-start;
+            border: 1px solid #3d3d3d; font-size: 0.95rem;
+        }
+
+        .btn-new-slot { background: transparent; border: 2px dashed #444; color: #777; box-shadow: none; justify-content: center; }
+        .btn-copy { background: linear-gradient(145deg, #3776ab, #2e618d); color: white; }
+        .btn-delete { background: linear-gradient(145deg, #dc3545, #b02a37); color: white; font-size: 1.2rem; }
+
+        .confirm-box { display: flex; gap: 4px; width: 100%; height: 44px; }
+        .btn-yes { background: #28a745; color: white; flex: 1; font-size: 0.7rem; padding: 0; }
+        .btn-no { background: #555; color: white; flex: 1; font-size: 0.7rem; padding: 0; }
+
+        #editor {
+            background: #2a2a2a; padding: 20px; border-radius: 15px; display: none;
+            border: 1px solid #333; margin-bottom: 40px; box-shadow: 8px 8px 16px rgba(0,0,0,0.5);
+        }
+
+        input, textarea {
+            width: 100%; padding: 12px; margin-top: 8px; border-radius: 8px; border: none;
+            background: #1a1a1a; color: #00ff00; box-sizing: border-box; font-size: 1rem;
+            box-shadow: inset 3px 3px 6px rgba(0,0,0,0.8); font-family: 'Courier New', Courier, monospace;
         }
         
-        body { font-family: -apple-system, system-ui, sans-serif; background-color: var(--bg); margin: 0; padding: 15px 10px; color: var(--text); overflow-x: hidden; }
-        .container { width: 100%; max-width: 850px; margin: 0 auto; padding-bottom: 80px; }
-        
-        .card-main { background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-        
-        .input-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-        
-        .token-container { position: relative; width: 100%; }
-        .token-container::after { content: '🔒'; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 14px; opacity: 0.5; }
+        .btn-update { 
+            background: linear-gradient(145deg, #28a745, #218838); color: white; 
+            width: 100%; margin-top: 20px; height: 50px; text-transform: uppercase;
+        }
 
-        input { width: 100%; border: 1px solid var(--border); padding: 14px; border-radius: 8px; background: #000; color: var(--accent); font-size: 16px; outline: none; border-left: 3px solid var(--accent); }
-        input::placeholder { color: #555; }
+        .backup-zone { display: flex; gap: 10px; margin-top: 20px; justify-content: center; }
+        .btn-backup { background: #444; color: #aaa; font-size: 0.7rem; padding: 8px; height: auto; border: 1px solid #555; }
 
-        .action-group { display: grid; grid-template-columns: 1fr; gap: 10px; }
-        
-        .btn { border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; padding: 14px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
-        .btn:active { transform: scale(0.98); opacity: 0.8; }
-        
-        .btn-primary { background: var(--accent); color: #000; }
-        .btn-update { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
-        .btn-cache { background: #333; color: #888; font-size: 0.7rem; }
-        .btn-success { background: var(--accent); color: #000; flex: 2; }
-        .btn-history { background: #262626; color: #aaa; border: 1px solid var(--border); flex: 1; }
-        .btn-cancel { background: #444; color: white; }
-        
-        .status-wrapper { display: flex; align-items: center; gap: 15px; width: 100%; justify-content: center; }
-        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #333; transition: 0.3s; flex-shrink: 0; }
-        .status-dot.loading { background: var(--warning) !important; animation: pulse-yellow 0.8s infinite alternate; box-shadow: 0 0 15px var(--warning); }
-        .status-dot.success { background: var(--success) !important; box-shadow: 0 0 15px var(--success); }
-        .status-dot.error { background: var(--danger) !important; box-shadow: 0 0 15px var(--danger); }
+        #toast {
+            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+            background: #3776ab; color: #fff; padding: 10px 25px; border-radius: 30px; display: none; z-index: 1000;
+        }
 
-        @keyframes pulse-yellow { from { opacity: 0.3; transform: scale(0.8); } to { opacity: 1; transform: scale(1.1); } }
-
-        .file-item { background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; overflow: hidden; }
-        .file-info { padding: 12px 15px; background: #252525; border-bottom: 1px solid var(--border); }
-        .file-label { font-family: monospace; font-weight: bold; color: var(--accent); font-size: 0.9rem; }
-        
-        /* Contrôles de Recherche */
-        .search-row { display: flex; gap: 8px; padding: 10px; background: #161616; align-items: center; }
-        .search-input { flex: 1; height: 40px; background: #000; color: #fff; border: 1px solid var(--border); border-radius: 6px; padding: 0 12px; }
-        .search-btn { background: #333; color: var(--accent); border: 1px solid var(--border); padding: 0 12px; border-radius: 6px; cursor: pointer; height: 40px; font-weight: bold; font-size: 0.8rem; }
-        .search-btn:active { background: #444; }
-        .search-count { font-size: 0.75rem; color: #666; min-width: 40px; text-align: center; font-family: monospace; }
-        
-        /* Historique */
-        .history-list { background: #000; border-radius: 0; display: none; border-bottom: 1px solid var(--border); overflow: hidden; }
-        .history-item { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.75rem; cursor: pointer; }
-        .history-item:hover { background: #1a1a1a; }
-        .history-date { color: var(--accent); font-weight: bold; margin-bottom: 4px; }
-
-        .editor-box { width: 100%; height: 400px; background: #0a0a0a; color: #bbb; border: none; padding: 15px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 20px; outline: none; resize: vertical; }
-        .editor-box:focus { color: #fff; }
-
-        #toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #000; padding: 12px 24px; border-radius: 4px; display: none; z-index: 3000; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        #confirmBar { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: calc(100% - 30px); max-width: 500px; background: #222; padding: 20px; border-radius: 12px; display: none; flex-direction: column; gap: 15px; border: 2px solid var(--accent); z-index: 2000; }
-        
-        footer { text-align: center; padding: 40px 10px; font-size: 0.75rem; color: #444; text-transform: uppercase; letter-spacing: 2px; }
+        footer { margin-top: auto; text-align: center; font-size: 0.7rem; color: #555; padding: 20px 0; }
+        svg { fill: white; width: 18px; height: 18px; }
+        #pwaInstallBtn {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: linear-gradient(145deg, #5a5821, #454319);
+            color: white; border: none; padding: 12px 24px; border-radius: 50px; display: none; z-index: 10000; font-weight: bold;
+        }
     </style>
 
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#4b6cb7">
 <link rel="apple-touch-icon" href="icon.png"></head>
-<body onload="loadConfig()">
+<body>
 
-<div id="toast"></div>
+    <h2 style="text-align: center; margin-top: 10px; color: #ffd43b; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">LB Code</h2>
 
-<div id="confirmBar">
-    <span id="confirmMsg" style="text-align:center; color:white; font-weight:bold;">DÉPLOYER ?</span>
-    <div style="display:flex; gap:10px; width:100%;">
-        <button class="btn btn-cancel" style="flex:1" onclick="closeConfirm()">ANNULER</button>
-        <button class="btn btn-success" style="flex:1" id="finalSaveBtn">CONFIRMER</button>
+    <div id="search-container">
+        <input type="text" id="search-bar" placeholder="Rechercher un code..." oninput="filterButtons()">
     </div>
-</div>
 
-<div class="container">
-    <div class="card-main">
-        <div class="input-group">
-            <div class="token-container">
-                <input type="password" id="ghToken" placeholder="GitHub Token (Sauvegardé localement)" oninput="saveConfig()">
-            </div>
-            <input type="text" id="repoName" placeholder="pseudo/repository" oninput="saveConfig()">
-        </div>
-        <div class="action-group">
-            <button class="btn btn-primary" onclick="fetchRepo()">CHARGER LE PROJET</button>
-            <div class="status-wrapper">
-                <div class="status-dot status-indicator"></div>
-                <button class="btn btn-update" style="flex:1" onclick="openProductionSite()">🌍 VOIR LE SITE LIVE</button>
-                <div class="status-dot status-indicator"></div>
-            </div>
-            <button class="btn btn-cache" onclick="fullReset()">RESET & CLEAR CACHE</button>
+    <div id="button-list"></div>
+
+    <div id="editor">
+        <label style="font-size: 0.8rem; color: #bbb; margin-left: 5px;">Titre du bouton :</label>
+        <input type="text" id="input-title">
+        <br><br>
+        <label style="font-size: 0.8rem; color: #bbb; margin-left: 5px;">Texte à copier :</label>
+        <textarea id="input-content" rows="8"></textarea>
+        <div id="editor-actions">
+            <button class="btn-update" onclick="showUpdateConfirm()">Sauvegarder</button>
         </div>
     </div>
-    <div id="fileList"></div>
-    <footer>Sniper Engine — 2026 — Paris</footer>
-</div>
 
-<script>
-    let filesData = {};
-    let globalRepoExact = ""; 
-    let statusInterval = null;
-    let lastRunIdBeforeUpdate = null;
+    <div class="backup-zone">
+        <button class="btn-backup" onclick="exportData()">Exporter (Backup)</button>
+        <button class="btn-backup" onclick="document.getElementById('importFile').click()">Importer JSON</button>
+        <input type="file" id="importFile" style="display:none" onchange="importData(event)">
+    </div>
 
-    // --- Gestion Sécurisée du Stockage ---
-    function saveConfig() {
-        localStorage.setItem('sniper_token', document.getElementById('ghToken').value);
-        localStorage.setItem('sniper_repo', document.getElementById('repoName').value);
-    }
+    <div id="toast">Copié !</div>
+    <button id="pwaInstallBtn">Installer l'application</button>
+    <footer>Made by Laiche Brahim 2026 Paris</footer>
 
-    function loadConfig() {
-        const savedToken = localStorage.getItem('sniper_token');
-        const savedRepo = localStorage.getItem('sniper_repo');
-        if (savedToken) document.getElementById('ghToken').value = savedToken;
-        if (savedRepo) document.getElementById('repoName').value = savedRepo;
-    }
-
-    function fullReset() {
-        if(confirm("Voulez-vous vraiment effacer le token et le cache ?")) {
-            localStorage.clear();
-            location.reload();
+    <script>
+        const pythonPalette = ["#3776ab", "#ffd43b", "#a3be8c", "#ebcb8b", "#b48ead"];
+        let warehouseData = JSON.parse(localStorage.getItem('lb_code_data')) || [];
+        
+        if (warehouseData.length === 0) {
+            warehouseData = [{ id: Date.now().toString(), title: "Exemple", text: "print('Hello World')", color: "#3776ab" }];
+            localStorage.setItem('lb_code_data', JSON.stringify(warehouseData));
         }
-    }
 
-    // --- Logique Application ---
-    function notify(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
-    function openConfirm(msg, callback) { document.getElementById('confirmMsg').innerText = msg; document.getElementById('confirmBar').style.display = 'flex'; document.getElementById('finalSaveBtn').onclick = () => { callback(); closeConfirm(); }; }
-    function closeConfirm() { document.getElementById('confirmBar').style.display = 'none'; }
+        let currentEditingId = null;
 
-    function setStatusClass(className) {
-        document.querySelectorAll('.status-indicator').forEach(dot => dot.className = "status-dot status-indicator " + className);
-    }
-
-    function openProductionSite() {
-        if (!globalRepoExact) return notify("⚠️ Aucun repo chargé");
-        window.open(`https://${globalRepoExact.split('/')[0].toLowerCase()}.github.io/${globalRepoExact.split('/')[1]}/?t=${Date.now()}`, '_blank');
-    }
-
-    async function updateActionStatus() {
-        if (!globalRepoExact) return;
-        const token = document.getElementById('ghToken').value;
-        try {
-            const res = await fetch(`https://api.github.com/repos/${globalRepoExact}/actions/runs?per_page=1`, { headers: { 'Authorization': `token ${token}` } });
-            const data = await res.json();
-            if (data.workflow_runs && data.workflow_runs.length > 0) {
-                const lastRun = data.workflow_runs[0];
-                if (lastRun.id === lastRunIdBeforeUpdate) { setStatusClass("loading"); return; }
-                if (lastRun.status === "completed") {
-                    setStatusClass(lastRun.conclusion === "success" ? "success" : "error");
-                    lastRunIdBeforeUpdate = lastRun.id;
-                    clearInterval(statusInterval);
-                    if(lastRun.conclusion === "success") notify("✅ DÉPLOIEMENT RÉUSSI");
-                } else { setStatusClass("loading"); }
-            }
-        } catch (e) { console.error(e); }
-    }
-
-    function startStatusPolling() {
-        setStatusClass("loading");
-        clearInterval(statusInterval);
-        statusInterval = setInterval(updateActionStatus, 4000);
-    }
-
-    async function fetchRepo() {
-        const token = document.getElementById('ghToken').value;
-        const repoInput = document.getElementById('repoName').value.trim();
-        if(!token || !repoInput) return notify("⚠️ Identifiants manquants");
-        try {
-            const repoMetaRes = await fetch(`https://api.github.com/repos/${repoInput}`, { headers: { 'Authorization': `token ${token}` } });
-            const repoMetaData = await repoMetaRes.json();
-            globalRepoExact = repoMetaData.full_name;
-            
-            const runRes = await fetch(`https://api.github.com/repos/${globalRepoExact}/actions/runs?per_page=1`, { headers: { 'Authorization': `token ${token}` } });
-            const runData = await runRes.json();
-            if(runData.workflow_runs && runData.workflow_runs[0]) {
-                lastRunIdBeforeUpdate = runData.workflow_runs[0].id;
-                const last = runData.workflow_runs[0];
-                setStatusClass(last.status === "completed" ? (last.conclusion === "success" ? "success" : "error") : "loading");
-            }
-
-            const res = await fetch(`https://api.github.com/repos/${globalRepoExact}/contents/`, { headers: { 'Authorization': `token ${token}` } });
-            const files = await res.json();
-            document.getElementById('fileList').innerHTML = "";
-            for (let f of files) {
-                if (f.type === 'file' && !f.name.match(/\.(png|jpg|ico|gif|webp|woff2)$/i)) {
-                    const fileRes = await fetch(f.url, { headers: { 'Authorization': `token ${token}` } });
-                    const d = await fileRes.json();
-                    const content = decodeURIComponent(escape(atob(d.content)));
-                    filesData[f.sha] = { content, path: f.path, name: f.name, matches: [], currentIndex: -1 }; 
-                    renderFileCard(f, content);
-                }
-            }
-            notify("PROJET SYNCHRONISÉ");
-        } catch(e) { notify("ERREUR DE CONNEXION"); }
-    }
-
-    function renderFileCard(f, content) {
-        const div = document.createElement('div');
-        div.className = 'file-item';
-        
-        // CORRECTION ICI : On n'injecte plus le ${content} dans le innerHTML
-        // On laisse le <textarea> vide dans le template
-        div.innerHTML = `
-            <div class="file-info"><span class="file-label">MOD : ${f.name}</span></div>
-            <div class="search-row">
-                <input type="text" id="in-${f.sha}" class="search-input" placeholder="RECHERCHER...">
-                <button class="search-btn" onclick="scan('${f.sha}')">FIND</button>
-                <button class="search-btn" onclick="prevMatch('${f.sha}')">▲</button>
-                <button class="search-btn" onclick="nextMatch('${f.sha}')">▼</button>
-                <div class="search-count" id="count-${f.sha}">0/0</div>
-            </div>
-            <textarea id="txt-${f.sha}" class="editor-box" spellcheck="false" oninput="filesData['${f.sha}'].content = this.value"></textarea>
-            <div id="hist-${f.sha}" class="history-list"></div>
-            <div style="padding:15px; background:#1e1e1e; display:flex; gap:10px;">
-                <button class="btn btn-history" onclick="toggleHistory('${f.sha}')">HISTORIQUE</button>
-                <button class="btn btn-success" onclick="prepareSave('${f.sha}')">UPDATE CORE</button>
-            </div>
-        `;
-        document.getElementById('fileList').appendChild(div);
-        
-        // On injecte le texte de manière 100% sécurisée via la propriété .value
-        document.getElementById(`txt-${f.sha}`).value = content;
-    }
-
-    // --- Système de Recherche & Surlignage ---
-    function scan(sha) {
-        const q = document.getElementById('in-'+sha).value;
-        const txt = filesData[sha].content;
-        if(!q) { filesData[sha].matches = []; filesData[sha].currentIndex = -1; updateCounter(sha); return; }
-        
-        const regex = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-        let matches = [], m;
-        while ((m = regex.exec(txt)) !== null) { matches.push({s: m.index, e: m.index + m[0].length}); }
-        
-        filesData[sha].matches = matches;
-        filesData[sha].currentIndex = matches.length > 0 ? 0 : -1;
-        updateCounter(sha);
-        if(matches.length > 0) focusMatch(sha);
-    }
-
-    function focusMatch(sha) {
-        const data = filesData[sha];
-        if(data.matches.length === 0 || data.currentIndex < 0) return;
-        const match = data.matches[data.currentIndex];
-        const ta = document.getElementById('txt-'+sha);
-        ta.focus();
-        ta.setSelectionRange(match.s, match.e);
-        updateCounter(sha);
-    }
-
-    function nextMatch(sha) {
-        const data = filesData[sha];
-        if(data.matches.length === 0) return;
-        data.currentIndex = (data.currentIndex + 1) % data.matches.length;
-        focusMatch(sha);
-    }
-
-    function prevMatch(sha) {
-        const data = filesData[sha];
-        if(data.matches.length === 0) return;
-        data.currentIndex = (data.currentIndex - 1 + data.matches.length) % data.matches.length;
-        focusMatch(sha);
-    }
-
-    function updateCounter(sha) { 
-        document.getElementById('count-'+sha).innerText = filesData[sha].matches.length > 0 ? `${filesData[sha].currentIndex + 1}/${filesData[sha].matches.length}` : "0/0"; 
-    }
-
-    // --- Système d'Historique ---
-    async function toggleHistory(sha) {
-        const historyDiv = document.getElementById(`hist-${sha}`);
-        if(historyDiv.style.display === 'block') { historyDiv.style.display = 'none'; return; }
-        const token = document.getElementById('ghToken').value;
-        const file = filesData[sha];
-        notify("LECTURE LOGS...");
-        try {
-            const res = await fetch(`https://api.github.com/repos/${globalRepoExact}/commits?path=${file.path}&per_page=5`, { headers: { 'Authorization': `token ${token}` } });
-            const commits = await res.json();
-            historyDiv.innerHTML = commits.map(c => `<div class="history-item" onclick="loadOldVersion('${sha}', '${c.sha}')"><div class="history-date">${new Date(c.commit.author.date).toLocaleString()}</div><div style="color:#666">${c.commit.message}</div></div>`).join('') || '<div class="history-item">Aucun log</div>';
-            historyDiv.style.display = 'block';
-        } catch(e) { notify("ERREUR LOGS"); }
-    }
-
-    async function loadOldVersion(sha, commitSha) {
-        const token = document.getElementById('ghToken').value;
-        const file = filesData[sha];
-        try {
-            const res = await fetch(`https://api.github.com/repos/${globalRepoExact}/contents/${file.path}?ref=${commitSha}`, { headers: { 'Authorization': `token ${token}` } });
-            const data = await res.json();
-            const oldContent = decodeURIComponent(escape(atob(data.content)));
-            document.getElementById(`txt-${sha}`).value = oldContent;
-            filesData[sha].content = oldContent;
-            notify("VERSION RESTAURÉE");
-            document.getElementById(`hist-${sha}`).style.display = 'none';
-        } catch(e) { notify("ERREUR RESTAURATION"); }
-    }
-
-    // --- Sauvegarde ---
-    function prepareSave(sha) { openConfirm(`DÉPLOYER LES MODIFICATIONS ?`, () => executeUpdate(sha)); }
-    
-    async function executeUpdate(sha) {
-        const token = document.getElementById('ghToken').value;
-        const file = filesData[sha];
-        try {
-            const check = await fetch(`https://api.github.com/repos/${globalRepoExact}/contents/${file.path}`, { headers: { 'Authorization': `token ${token}` } });
-            const latest = await check.json();
-            const res = await fetch(`https://api.github.com/repos/${globalRepoExact}/contents/${file.path}`, {
-                method: 'PUT',
-                headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: "Sniper Core Update", content: btoa(unescape(encodeURIComponent(file.content))), sha: latest.sha })
+        if (navigator.storage && navigator.storage.persist) {
+            navigator.storage.persist().then(granted => {
+                if (granted) console.log("Stockage Persistant Activé");
             });
-            if(res.ok) { notify("PUSH RÉUSSI"); startStatusPolling(); }
-        } catch (e) { notify("ERREUR PUSH"); }
-    }
-</script>
+        }
+
+        function saveData() {
+            localStorage.setItem('lb_code_data', JSON.stringify(warehouseData));
+            renderButtons();
+        }
+
+        function renderButtons() {
+            const container = document.getElementById('button-list');
+            container.innerHTML = '';
+            warehouseData.forEach((item) => {
+                container.appendChild(createRow(item, false));
+            });
+            container.appendChild(createRow({ id: 'new', title: "+ Ajouter un snippet", text: "", color: "#888", isNew: true }, true));
+        }
+
+        function createRow(item, isNewSlot) {
+            const row = document.createElement('div');
+            row.className = 'grid-row';
+
+            const colorMenu = document.createElement('div');
+            colorMenu.className = 'color-menu';
+            pythonPalette.forEach(c => {
+                const opt = document.createElement('div');
+                opt.className = 'color-option';
+                opt.style.backgroundColor = c;
+                opt.onclick = (e) => { e.stopPropagation(); item.color = c; saveData(); };
+                colorMenu.appendChild(opt);
+            });
+
+            const colorBtn = document.createElement('button');
+            colorBtn.className = 'btn-color-trigger';
+            colorBtn.style.backgroundColor = item.color;
+            if (!isNewSlot) {
+                colorBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    document.querySelectorAll('.color-menu').forEach(m => m.style.display = 'none');
+                    colorMenu.style.display = 'flex';
+                };
+            }
+
+            const btnMain = document.createElement('button');
+            btnMain.className = isNewSlot ? 'btn-main btn-new-slot' : 'btn-main';
+            btnMain.innerText = item.title;
+            btnMain.style.color = item.color;
+            btnMain.onclick = () => openEditor(item, isNewSlot ? 'new' : item.id);
+            
+            const btnCopy = document.createElement('button');
+            btnCopy.className = 'btn-copy';
+            btnCopy.innerHTML = `<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`;
+            btnCopy.onclick = () => isNewSlot ? null : copyToClipboard(item.text);
+            if(isNewSlot) btnCopy.style.opacity = '0.3';
+
+            const deleteContainer = document.createElement('div');
+            const btnDel = document.createElement('button');
+            btnDel.className = 'btn-delete';
+            btnDel.innerText = '×';
+            
+            if(isNewSlot) { btnDel.style.visibility = 'hidden'; } 
+            else {
+                btnDel.onclick = (e) => {
+                    e.stopPropagation();
+                    deleteContainer.innerHTML = `
+                        <div class="confirm-box">
+                            <button class="btn-yes" onclick="confirmDelete('${item.id}')">OUI</button>
+                            <button class="btn-no" onclick="renderButtons()">×</button>
+                        </div>`;
+                };
+            }
+            deleteContainer.appendChild(btnDel);
+
+            row.appendChild(colorMenu);
+            row.appendChild(colorBtn);
+            row.appendChild(btnMain);
+            row.appendChild(btnCopy);
+            row.appendChild(deleteContainer);
+            
+            document.addEventListener('click', () => colorMenu.style.display = 'none');
+            return row;
+        }
+
+        window.openEditor = function(item, id) {
+            currentEditingId = id;
+            document.getElementById('editor').style.display = 'block';
+            resetEditorButtons();
+            document.getElementById('input-title').value = (id === 'new') ? "" : item.title;
+            document.getElementById('input-content').value = item.text;
+            setTimeout(() => {
+                document.getElementById('input-title').focus();
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }, 100);
+        }
+
+        window.resetEditorButtons = function() {
+            document.getElementById('editor-actions').innerHTML = `<button class="btn-update" onclick="showUpdateConfirm()">Sauvegarder</button>`;
+        }
+
+        window.showUpdateConfirm = function() {
+            document.getElementById('editor-actions').innerHTML = `
+                <div class="confirm-box" style="margin-top:20px;">
+                    <button class="btn-yes" style="height:50px; font-size:1rem;" onclick="processSave()">CONFIRMER</button>
+                    <button class="btn-no" style="height:50px; font-size:1rem;" onclick="resetEditorButtons()">ANNULER</button>
+                </div>`;
+        }
+
+        window.processSave = function() {
+            const title = document.getElementById('input-title').value || "Sans titre";
+            const text = document.getElementById('input-content').value || "";
+            if (currentEditingId === 'new') {
+                warehouseData.push({ id: Date.now().toString(), title: title, text: text, color: pythonPalette[0] });
+            } else {
+                const index = warehouseData.findIndex(d => d.id === currentEditingId);
+                if (index !== -1) { warehouseData[index].title = title; warehouseData[index].text = text; }
+            }
+            document.getElementById('editor').style.display = 'none';
+            saveData();
+            showToast("Sauvegardé !");
+        }
+
+        window.confirmDelete = function(id) {
+            warehouseData = warehouseData.filter(item => item.id !== id);
+            saveData();
+            showToast("Supprimé");
+        }
+
+        window.copyToClipboard = function(text) {
+            if (!text) { showToast("Vide !"); return; }
+            navigator.clipboard.writeText(text).then(() => showToast("Copié !"));
+        }
+
+        window.filterButtons = function() {
+            const term = document.getElementById('search-bar').value.toLowerCase();
+            const rows = document.querySelectorAll('.grid-row');
+            rows.forEach(row => {
+                const text = row.querySelector('.btn-main').innerText.toLowerCase();
+                if (row.querySelector('.btn-new-slot')) return; 
+                row.style.display = text.includes(term) ? 'grid' : 'none';
+            });
+        }
+
+        window.exportData = function() {
+            const dataStr = JSON.stringify(warehouseData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', 'lb_code_backup.json');
+            linkElement.click();
+        }
+
+        window.importData = function(event) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (Array.isArray(imported)) {
+                        warehouseData = imported;
+                        saveData();
+                        showToast("Importation réussie !");
+                    }
+                } catch (err) { alert("Erreur : fichier invalide."); }
+            };
+            reader.readAsText(event.target.files[0]);
+        }
+
+        window.showToast = function(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 1500);
+        }
+
+        renderButtons();
+
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault(); deferredPrompt = e;
+            document.getElementById('pwaInstallBtn').style.display = 'block';
+        });
+        document.getElementById('pwaInstallBtn').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt = null;
+                document.getElementById('pwaInstallBtn').style.display = 'none';
+            }
+        });
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(reg => console.log('Service Worker OK'));
+            });
+        }
+    </script>
 
 <script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));}</script>
 </body>
