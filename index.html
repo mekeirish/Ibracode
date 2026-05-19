@@ -137,6 +137,9 @@
 
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#4b6cb7">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#4b6cb7">
 <link rel="apple-touch-icon" href="icon.png"></head>
 <body>
 
@@ -203,6 +206,30 @@
         function createRow(item, isNewSlot) {
             const row = document.createElement('div');
             row.className = 'grid-row';
+
+            if (!isNewSlot) {
+                row.draggable = true;
+                row.style.cursor = 'grab';
+                row.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', item.id);
+                });
+                row.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                });
+                row.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const draggedId = e.dataTransfer.getData('text/plain');
+                    if (draggedId && draggedId !== item.id) {
+                        const draggedIdx = warehouseData.findIndex(d => d.id === draggedId);
+                        const targetIdx = warehouseData.findIndex(d => d.id === item.id);
+                        if (draggedIdx !== -1 && targetIdx !== -1) {
+                            const [movedItem] = warehouseData.splice(draggedIdx, 1);
+                            warehouseData.splice(targetIdx, 0, movedItem);
+                            saveData();
+                        }
+                    }
+                });
+            }
 
             const colorMenu = document.createElement('div');
             colorMenu.className = 'color-menu';
@@ -376,6 +403,8 @@
             });
         }
     </script>
+
+<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));}</script>
 
 <script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));}</script>
 </body>
